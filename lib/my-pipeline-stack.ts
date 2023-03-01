@@ -18,20 +18,3 @@ export class MyPipelineStack extends cdk.Stack {
 
 }
 
-pipeline.addStage({
-  stageName: "Source",
-  actions: [
-    new codepipeline_actions.GitHubSourceAction({
-      actionName: "Checkout",
-      owner: "the-owner",
-      repo: "the-repo",
-      branch: "main",
-      oauthToken: CDK.SecretValue.secretsManager(
-        "Secret name", { jsonField: "key" }
-      ),
-      output: outputSources,
-      trigger: codepipeline_actions.GitHubTrigger.WEBHOOK,
-    }),
-  ],
-  ...
-})
