@@ -26,13 +26,17 @@ export class MyPipelineStack extends cdk.Stack {
       parameterName: 'region2',
     }).stringValue;
 
+    const account = ssm.StringParameter.fromStringParameterAttributes(this, 'account', {
+      parameterName: 'account',
+    }).stringValue;
+
     
     const wave = pipeline.addWave('wave');
     wave.addStage(new MyPipelineAppStage(this, 'MyAppSE', {
-      env: { region: region1 }
+      env: { account: account, region: region1 }
     }));
     wave.addStage(new MyPipelineAppStage(this, 'MyAppUS', {
-      env: { region: region2 }
+      env: { account: account, region: region2 }
     }));
 
     wave.addPost(new ManualApprovalStep('approval'));
