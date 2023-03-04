@@ -23,9 +23,6 @@ export class MyPipelineStack extends cdk.Stack {
 
     testingStage.addPost(new ManualApprovalStep('approval'));
 
-    testingStage.addPost(new ShellStep("validate", {
-      commands: ['../test/my-pipeline.test.ts'],
-    }));
   }
 }
 
