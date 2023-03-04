@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 import { MyPipelineAppStage } from './my-pipeline-app-stage';
 import { ManualApprovalStep } from 'aws-cdk-lib/pipelines';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 export class MyPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -17,8 +18,12 @@ export class MyPipelineStack extends cdk.Stack {
       })
     });
 
+    const stringValue = ssm.StringParameter.fromStringParameterAttributes(this, 'region1', {
+      parameterName: 'region1',
+    }).stringValue;
+
     const testingStage = pipeline.addStage(new MyPipelineAppStage(this, "test", {
-      env: {region: "ap-southeast-2" }
+      env: {region: stringValue}
     }));
 
     testingStage.addPost(new ManualApprovalStep('approval'));
