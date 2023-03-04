@@ -18,15 +18,24 @@ export class MyPipelineStack extends cdk.Stack {
       })
     });
 
-    const stringValue = ssm.StringParameter.fromStringParameterAttributes(this, 'region1', {
+    const region1 = ssm.StringParameter.fromStringParameterAttributes(this, 'region1', {
       parameterName: 'region1',
     }).stringValue;
 
-    const testingStage = pipeline.addStage(new MyPipelineAppStage(this, "test", {
-      env: {region: stringValue}
+    const region2 = ssm.StringParameter.fromStringParameterAttributes(this, 'region2', {
+      parameterName: 'region2',
+    }).stringValue;
+
+    
+    const wave = pipeline.addWave('wave');
+    wave.addStage(new MyPipelineAppStage(this, 'MyAppSE', {
+      env: { region: region1 }
+    }));
+    wave.addStage(new MyPipelineAppStage(this, 'MyAppUS', {
+      env: { region: region2 }
     }));
 
-    testingStage.addPost(new ManualApprovalStep('approval'));
+    wave.addPost(new ManualApprovalStep('approval'));
 
   }
 }
